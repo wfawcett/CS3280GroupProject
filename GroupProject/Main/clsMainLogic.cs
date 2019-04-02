@@ -4,9 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GroupProject.Main
+namespace GroupProject
 {
-    class clsMainLogic
-    {
+    class clsMainLogic {
+        private clsMainSQL models;
+        public clsMainLogic() {
+            models = new clsMainSQL();            
+        }
+
+        public List<clsMainSQL.Invoice> getAllInvoices() {
+            return models.getAllInvoices();
+        }
     }
 }
