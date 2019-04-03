@@ -65,8 +65,8 @@
     <Compile Include="Main\clsMainSQL.cs" />
     <Compile Include="Search\clsSearchLogic.cs" />
     <Compile Include="Search\clsSearchSQL.cs" />
-    <Compile Include="Search\wndItems.xaml.cs">
-      <DependentUpon>wndItems.xaml</DependentUpon>
+    <Compile Include="Search\wndSearch.xaml.cs">
+      <DependentUpon>wndSearch.xaml</DependentUpon>
     </Compile>
     <Page Include="Items\wndItems.xaml">
       <SubType>Designer</SubType>
@@ -84,7 +84,7 @@
       <DependentUpon>wndMain.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Search\wndItems.xaml">
+    <Page Include="Search\wndSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

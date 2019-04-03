@@ -20,6 +20,7 @@ namespace GroupProject {
     public partial class MainWindow : Window {
         
         clsMainLogic controller;
+        clsMainLogic.Invoice currentInvoice;
 
         public MainWindow() {
             InitializeComponent();
@@ -30,9 +31,24 @@ namespace GroupProject {
         }
 
         private void InvoiceList_SelectionChanged_1(object sender, SelectionChangedEventArgs e) {
-            var lbi = (clsMainSQL.Invoice)e.AddedItems[0];
-            MessageBox.Show(lbi.InvoiceNum.ToString());
+            clsMainLogic.Invoice clickedInvoice = (clsMainLogic.Invoice)e.AddedItems[0];
+            setCurrentInvoice(clickedInvoice);            
+        }
 
+        private void setCurrentInvoice(clsMainLogic.Invoice invoice) {
+            currentInvoice = invoice;
+            tbInvoiceNum.Text = (invoice.InvoiceNum < 0 )? "TBD" : invoice.InvoiceNum.ToString();
+            tbInvoiceDate.Text = invoice.InvoiceDate.ToString("MM/dd/yyyy");
+            tbTotalCost.Text = invoice.TotalCost.ToString();
+            lbInvoiceItems.ItemsSource = controller.getInvoiceDetails(invoice.InvoiceNum);
+        }
+
+        private void SearchMenuItem_Click(object sender, RoutedEventArgs e) {
+            controller.openSearchWindow();
+        }
+                
+        private void EditMenuItem_Click(object sender, RoutedEventArgs e) {
+            controller.openEditWindow();
         }
     }
 }
