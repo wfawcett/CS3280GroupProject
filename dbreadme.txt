@@ -1,0 +1,1 @@
+Copy Invoice.mdb to your bin/Debug/ folder 
