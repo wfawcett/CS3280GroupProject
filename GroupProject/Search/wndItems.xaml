@@ -5,8 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroupProject.Search"
         mc:Ignorable="d"
-        Title="wndItems" Height="450" Width="800">
-    <Grid>
-        
+        Title="Search" Height="450" Width="786.848">
+    <Grid Margin="10,0,2,0" RenderTransformOrigin="0.493,0.449">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="89*"/>
+            <RowDefinition Height="330*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="textBoxSearchBox" Height="23" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Button x:Name="btnSearch" Content="Submit" Margin="10,10,10,0" VerticalAlignment="Top" Height="23" Grid.Column="1"/>
+        <ListView x:Name="listViewResults" Margin="10,38,10,10" Grid.ColumnSpan="2" Grid.RowSpan="2" SelectionMode="Single">
+            <ListView.View>
+                <GridView AllowsColumnReorder="False" ColumnHeaderStringFormat="">
+                    <GridView.ColumnHeaderContextMenu>
+                        <ContextMenu/>
+                    </GridView.ColumnHeaderContextMenu>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
     </Grid>
 </Window>
