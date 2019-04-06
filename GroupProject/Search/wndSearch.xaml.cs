@@ -19,9 +19,33 @@ namespace GroupProject.Search
     /// </summary>
     public partial class wndSearch : Window
     {
+        private clsSearchLogic controller;
         public wndSearch()
         {
             InitializeComponent();
+            controller = new clsSearchLogic();
+            LoadItemList();
+        }
+
+        private void ButtonSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LoadItemList()
+        {
+            comboBoxItems.Items.Clear();
+            foreach (var item in controller.GetAllItems())
+            {
+                comboBoxItems.Items.Add(item);
+            }
+        }
+
+        private void ComboBoxItems_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox combo = sender as ComboBox;
+
+            MessageBox.Show( combo.Text );
         }
     }
 }
