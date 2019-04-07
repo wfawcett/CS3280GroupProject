@@ -28,23 +28,54 @@ namespace GroupProject.Search
         /// <summary>
         /// Get All Items from database
         /// </summary>
-        /// <returns>List of Item Checkboxes</returns>
-        public List<CheckBox> GetAllItems()
+        /// <returns>List of Items</returns>
+        public List<string> GetAllInvoices()
         {
-            List<CheckBox> items = new List<CheckBox>();
-            string query = sql.getAllItems();
+            List<string> items = new List<string>();
+            string query = sql.getAllInvoices();
             int iRef = 0;
             DataSet ds = db.ExecuteSQLStatement(query, ref iRef);
-            CheckBox cb = new CheckBox();
-
-            cb.Content = "Select All";
-            items.Add( cb );
 
             for (int i = 0; i < iRef; i++)
             {
-                cb = new CheckBox();
-                cb.Content = ds.Tables[0].Rows[i].ItemArray[0].ToString();
-                items.Add(cb);
+                items.Add(ds.Tables[0].Rows[i].ItemArray[0].ToString());
+            }
+            return items;
+        }
+
+
+        /// <summary>
+        /// Get All Dates from database
+        /// </summary>
+        /// <returns>List of Dates</returns>
+        public List<string> GetAllDates()
+        {
+            List<string> items = new List<string>();
+            string query = sql.getAllDates();
+            int iRef = 0;
+            DataSet ds = db.ExecuteSQLStatement(query, ref iRef);
+
+            for (int i = 0; i < iRef; i++)
+            {
+                items.Add(ds.Tables[0].Rows[i].ItemArray[0].ToString());
+            }
+            return items;
+        }
+
+        /// <summary>
+        /// Get All Costs from database
+        /// </summary>
+        /// <returns>List of Costs</returns>
+        public List<string> GetAllCosts()
+        {
+            List<string> items = new List<string>();
+            string query = sql.getAllCosts();
+            int iRef = 0;
+            DataSet ds = db.ExecuteSQLStatement(query, ref iRef);
+
+            for (int i = 0; i < iRef; i++)
+            {
+                items.Add(ds.Tables[0].Rows[i].ItemArray[0].ToString());
             }
             return items;
         }

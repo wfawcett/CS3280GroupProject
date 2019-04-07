@@ -112,7 +112,7 @@ namespace GroupProject
         /// </summary>
         public void openSearchWindow() {
             Search.wndSearch wndSearch = new Search.wndSearch();
-            wndSearch.Show();
+            wndSearch.ShowDialog();
         }
 
         /// <summary>

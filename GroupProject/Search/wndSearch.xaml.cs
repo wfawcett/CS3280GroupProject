@@ -24,7 +24,9 @@ namespace GroupProject.Search
         {
             InitializeComponent();
             controller = new clsSearchLogic();
-            LoadItemList();
+            LoadInvoiceList();
+            LoadDateList();
+            LoadCostList();
         }
 
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
@@ -32,20 +34,36 @@ namespace GroupProject.Search
 
         }
 
-        private void LoadItemList()
+        private void LoadInvoiceList()
         {
-            comboBoxItems.Items.Clear();
-            foreach (var item in controller.GetAllItems())
+            comboBoxInvoices.Items.Clear();
+            foreach (var item in controller.GetAllInvoices())
             {
-                comboBoxItems.Items.Add(item);
+                comboBoxInvoices.Items.Add(item);
             }
         }
 
-        private void ComboBoxItems_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LoadDateList()
         {
-            ComboBox combo = sender as ComboBox;
+            comboBoxDates.Items.Clear();
+            foreach (var item in controller.GetAllDates())
+            {
+                comboBoxDates.Items.Add(item);
+            }
+        }
 
-            MessageBox.Show( combo.Text );
+        private void LoadCostList()
+        {
+            comboBoxCosts.Items.Clear();
+            foreach (var item in controller.GetAllDates())
+            {
+                comboBoxCosts.Items.Add(item);
+            }
+        }
+
+        private void ButtonCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

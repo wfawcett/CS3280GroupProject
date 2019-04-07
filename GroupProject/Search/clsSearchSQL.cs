@@ -17,9 +17,19 @@ namespace GroupProject.Search
         /// Get All Items
         /// </summary>
         /// <returns>Get All Item SQL String</returns>
-        public string getAllItems()
+        public string getAllInvoices()
         {
-            return "SELECT ItemDesc FROM ItemDesc ORDER BY ItemDesc";
+            return "SELECT DISTINCT InvoiceNum FROM Invoices";
+        }
+
+        public string getAllDates()
+        {
+            return "SELECT DISTINCT FORMAT(InvoiceDate, 'mm/dd/yyyy') AS InvoiceDate FROM Invoices";
+        }
+
+        public string getAllCosts()
+        {
+            return "SELECT DISTINCT TotalCost FROM Invoices";
         }
     }
 }
