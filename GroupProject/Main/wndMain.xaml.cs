@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,28 +30,44 @@ namespace GroupProject {
         /// </summary>
         clsMainLogic.Invoice currentInvoice;
 
+        ObservableCollection<clsMainLogic.Invoice> allInvoices = new ObservableCollection<clsMainLogic.Invoice>();
+        
         /// <summary>
         /// default constructor
         /// </summary>
         public MainWindow() {
             InitializeComponent();
             controller = new clsMainLogic();
-            
-            ListBox invoiceListControl = invoiceList;
-            invoiceListControl.ItemsSource = controller.getAllInvoices();
+            updateAllInvoices();            
+            lbStock.ItemsSource = controller.getAllItemsInStock();
         }
 
         /// <summary>
-        /// alternate constructor, initiallizes window and loads and selects invoice passed to it.
+        /// alternate constructor, initializes window and loads and selects invoice passed to it.
         /// </summary>
         /// <param name="invoiceNumber"></param>
         public MainWindow(int invoiceNumber) {
             InitializeComponent();
             controller = new clsMainLogic();
+            updateAllInvoices();
+            lbStock.ItemsSource = controller.getAllItemsInStock();
+            currentInvoice = controller.getInvoceNum(invoiceNumber);            
+        }
 
-            ListBox invoiceListControl = invoiceList;
-            invoiceListControl.ItemsSource = controller.getAllInvoices();
-            /// load invoiceNumber and set it as selected.
+        public void refresh() {
+            if (invoiceList.SelectedIndex > -1) {
+                int selectedIndex = invoiceList.SelectedIndex;
+                updateAllInvoices();
+                invoiceList.SelectedIndex = selectedIndex;
+            }
+        }
+
+        private void updateAllInvoices() {
+            allInvoices.Clear();
+            foreach (var invoice in controller.getAllInvoices()) {
+                allInvoices.Add(invoice);
+            }
+            invoiceList.ItemsSource = allInvoices;
         }
 
         /// <summary>
@@ -59,8 +76,10 @@ namespace GroupProject {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void InvoiceList_SelectionChanged_1(object sender, SelectionChangedEventArgs e) {
-            clsMainLogic.Invoice clickedInvoice = (clsMainLogic.Invoice)e.AddedItems[0];
-            setCurrentInvoice(clickedInvoice);            
+            if (invoiceList.SelectedIndex > -1) {
+                clsMainLogic.Invoice clickedInvoice = (clsMainLogic.Invoice)e.AddedItems[0];
+                setCurrentInvoice(clickedInvoice);
+            }            
         }
 
         /// <summary>
@@ -68,11 +87,23 @@ namespace GroupProject {
         /// </summary>
         /// <param name="invoice"></param>
         private void setCurrentInvoice(clsMainLogic.Invoice invoice) {
-            currentInvoice = invoice;
-            tbInvoiceNum.Text = (invoice.InvoiceNum < 0 )? "TBD" : invoice.InvoiceNum.ToString();
-            tbInvoiceDate.Text = invoice.InvoiceDate.ToString("MM/dd/yyyy");
-            tbTotalCost.Text = invoice.TotalCost.ToString();
-            lbInvoiceItems.ItemsSource = controller.getInvoiceDetails(invoice.InvoiceNum);
+            currentInvoice = invoice;                                                
+            currentInvoice.LoadItems(controller.getInvoiceDetails(invoice.InvoiceNum));
+            updateInvoiceDisplay();
+        }
+
+        private void updateInvoiceDisplay() {
+            btnAddItem.IsEnabled = true;
+            btnRemoveItem.IsEnabled = true;
+            btnSave.IsEnabled = true;
+            tbInvoiceNum.Text = (currentInvoice.InvoiceNum < 0) ? "TBD" : currentInvoice.InvoiceNum.ToString();
+            pickInvoiceDate.SelectedDate = currentInvoice.InvoiceDate;
+            tbTotalCost.Text = currentInvoice.TotalCost.ToString();
+            ObservableCollection<clsMainLogic.Item> observeItems = new ObservableCollection<clsMainLogic.Item>();
+            foreach (var item in currentInvoice.Items) {
+                observeItems.Add(item);
+            }
+            lbInvoiceItems.ItemsSource = observeItems;
         }
 
         /// <summary>
@@ -90,7 +121,7 @@ namespace GroupProject {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EditMenuItem_Click(object sender, RoutedEventArgs e) {
-            controller.openEditWindow();
+            controller.openEditWindow(this);
         }
 
         /// <summary>
@@ -100,6 +131,55 @@ namespace GroupProject {
         /// <param name="e"></param>
         private void MenuItem_Click(object sender, RoutedEventArgs e) {
             this.Close();
+        }
+
+        /// <summary>
+        /// event handler for invoice save button. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnSave_Click(object sender, RoutedEventArgs e) {
+            currentInvoice.InvoiceDate = (DateTime)pickInvoiceDate.SelectedDate;
+            currentInvoice = controller.saveInvoice(currentInvoice);
+            updateAllInvoices();
+            setCurrentInvoice(currentInvoice);            
+        }
+
+        private void BtnAddItem_Click(object sender, RoutedEventArgs e) {
+            if (lbStock.SelectedIndex > -1) {
+                clsMainLogic.Item selectedItem = (clsMainLogic.Item)lbStock.SelectedItem;
+                currentInvoice.AddItem(selectedItem);                
+                updateInvoiceDisplay();
+            }            
+        }
+
+        private void BtnRemoveItem_Click(object sender, RoutedEventArgs e) {
+            if (lbInvoiceItems.SelectedIndex > -1) {
+                currentInvoice.RemoveItem((clsMainLogic.Item)lbInvoiceItems.SelectedItem);
+                updateInvoiceDisplay();
+            }
+            
+        }
+
+        private void BtnNewInvoice_Click(object sender, RoutedEventArgs e) {
+            clsMainLogic.Invoice newInvoice = controller.createNewInvoice();
+            setCurrentInvoice(newInvoice);
+        }
+
+        private void BtnDeleteInvoice_Click(object sender, RoutedEventArgs e) {
+            controller.deleteInvoice(currentInvoice);
+            updateAllInvoices();
+            clearDisplay();
+        }
+
+        private void clearDisplay() {
+            lbInvoiceItems.ItemsSource = null;
+            tbInvoiceNum.Text = "";
+            pickInvoiceDate.SelectedDate = null;
+            tbTotalCost.Text = "";
+            btnSave.IsEnabled = false;
+            btnRemoveItem.IsEnabled = false;
+            btnAddItem.IsEnabled = false;
         }
     }
 }

@@ -21,13 +21,13 @@ namespace GroupProject
         /// <summary>
         /// struct representing an item in the database.
         /// </summary>
-        public struct InvoiceDetail {
+        public struct Item {
             public string ItemCode, ItemDesc;
-            public decimal Cost;
-            public InvoiceDetail(String code, String desc, decimal cost) {
+            public decimal Cost;                    
+            public Item(String code, String desc, decimal cost) {
                 ItemCode = code;
                 ItemDesc = desc;
-                Cost = cost;
+                Cost = cost;                
             }
             public override string ToString() {
                 return String.Format("${0} {1}", Cost, ItemDesc);
@@ -38,13 +38,46 @@ namespace GroupProject
         /// struct representing an invoice in our database.
         /// </summary>
         public struct Invoice {
-            public int InvoiceNum, TotalCost;
+            public int InvoiceNum;
+            public int TotalCost;
             public DateTime InvoiceDate;
+            public List<Item> Items;             
             public Invoice(int number, DateTime date, int cost) {
                 InvoiceNum = number;
                 InvoiceDate = date;
                 TotalCost = cost;
+                Items = new List<Item>();                
             }
+            
+            public void LoadItems(List<Item> items) {
+                this.Items = items;
+            }
+
+            public void ReCalculate() {
+                int newTotal = 0;
+                foreach (var item in Items) {
+                    newTotal += (int)item.Cost;
+                }
+                TotalCost = newTotal;
+            }
+
+            public void AddItem(Item item) {
+                
+                Items.Add(item);
+                ReCalculate();
+            }
+
+            public void RemoveItem(Item removedItem) {                
+                int removeAt = -1;
+                for (int i = 0; i < Items.Count; i++) {
+                    if (Items[i].Equals(removedItem)) {
+                        removeAt = i;
+                    }
+                }
+                Items.RemoveAt(removeAt);                                                
+                ReCalculate();
+            }
+            
             public override string ToString() {
                 return String.Format("#{0} due {1} ${2}", InvoiceNum, InvoiceDate, TotalCost);
             }
@@ -78,13 +111,13 @@ namespace GroupProject
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public List<InvoiceDetail> getInvoiceDetails(int invoiceNumber) {
-            List<InvoiceDetail> invoices = new List<InvoiceDetail>();
+        public List<Item> getInvoiceDetails(int invoiceNumber) {
+            List<Item> invoices = new List<Item>();
             string query =sql.getItemsForInvoiceNumber(invoiceNumber);
             int iRef = 0;
             DataSet ds = db.ExecuteSQLStatement(query, ref iRef);
             for (int i = 0; i < iRef; i++) {
-                InvoiceDetail detail = new InvoiceDetail(
+                Item detail = new Item(
                     ds.Tables[0].Rows[i]["ItemCode"].ToString(),
                     ds.Tables[0].Rows[i]["ItemDesc"].ToString(),
                     (decimal)ds.Tables[0].Rows[i]["Cost"]);
@@ -92,6 +125,66 @@ namespace GroupProject
             }
             return invoices;
         }
+        
+        public List<Item> getAllItemsInStock() {
+            List<Item> items = new List<Item>();
+            string query = sql.getAllItems();
+            int count = 0;
+            DataSet ds = db.ExecuteSQLStatement(query, ref count);            
+            for (int i = 0; i < count; i++) {
+                Item item = new Item(
+                    ds.Tables[0].Rows[i]["ItemCode"].ToString(),
+                    ds.Tables[0].Rows[i]["ItemDesc"].ToString(),
+                    (decimal)ds.Tables[0].Rows[i]["Cost"]);
+                items.Add(item);
+            }
+            return items;
+        }
+
+        internal Invoice saveInvoice(Invoice currentInvoice) {            
+            if (currentInvoice.InvoiceNum > -1) {
+                // existing invoice
+                
+                string deleteCommand = sql.deleteAllInvoiceLineItems(currentInvoice.InvoiceNum);
+                db.ExecuteNonQuery(deleteCommand);                               
+            }
+            else { 
+                // new invoice
+                
+                string insertCommand = sql.addNewInvoice(currentInvoice.InvoiceDate, currentInvoice.TotalCost);
+                db.ExecuteNonQuery(insertCommand);
+                string getLatestCommand = sql.getLatestInvoice();
+                int count = 0;
+                DataSet ds = db.ExecuteSQLStatement(getLatestCommand, ref count);
+                Invoice invoice = rowToInvoice(ds.Tables[0].Rows[0]);
+                currentInvoice.InvoiceNum = invoice.InvoiceNum;
+            }
+
+            currentInvoice.ReCalculate();
+            string updateCommnad = sql.updateInvoice(currentInvoice.TotalCost, currentInvoice.InvoiceDate, currentInvoice.InvoiceNum);
+            db.ExecuteNonQuery(updateCommnad);
+
+            for (int i = 0; i < currentInvoice.Items.Count; i++) {
+                string insertCommand = sql.addNewLineItem(currentInvoice.InvoiceNum, i + 1, currentInvoice.Items[i].ItemCode);
+                db.ExecuteNonQuery(insertCommand);
+            }
+
+            return currentInvoice;
+
+
+        }
+
+        internal void deleteInvoice(Invoice currentInvoice) {
+            // removes all line items first
+            string deleteItemsCommand = sql.deleteAllInvoiceLineItems(currentInvoice.InvoiceNum);
+            db.ExecuteNonQuery(deleteItemsCommand);
+
+            string deleteInvoiceCommand = sql.deleteInvoice(currentInvoice.InvoiceNum);
+            db.ExecuteNonQuery(deleteInvoiceCommand);
+        }
+
+
+
 
         /// <summary>
         /// Get an invoice by number
@@ -107,6 +200,11 @@ namespace GroupProject
             return invoice;
         }
 
+        internal Invoice createNewInvoice() {
+            Invoice newInvoice = new Invoice(-1, DateTime.Today, 0);
+            return newInvoice;
+        }
+
         /// <summary>
         /// opens the search window.
         /// </summary>
@@ -118,8 +216,8 @@ namespace GroupProject
         /// <summary>
         /// opens the edit window.
         /// </summary>
-        public void openEditWindow() {
-            Items.wndItems wndItems = new Items.wndItems();
+        public void openEditWindow(MainWindow win) {            
+            Items.wndItems wndItems = new Items.wndItems(win);
             wndItems.Show();
         }
 
@@ -134,7 +232,6 @@ namespace GroupProject
                 (DateTime)row["InvoiceDate"],
                 (int)row["TotalCost"]);
             return invoice;
-        }
-
+        }       
     }
 }

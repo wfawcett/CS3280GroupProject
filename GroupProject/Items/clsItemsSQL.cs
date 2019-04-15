@@ -13,7 +13,7 @@ namespace GroupProject.Items
         /// </summary>
         /// <returns>SQL statement</returns>
         public string getAllItems() {
-            return "select ItemCode, ItemDesc, Cost from ItemDesc";
+            return "select ItemCode, ItemDesc, Cost from ItemDesc order by ItemDesc";
         }
 
         /// <summary>
@@ -23,6 +23,10 @@ namespace GroupProject.Items
         /// <returns>SQL statement</returns>
         public string getAllInvoicesForItemCode(string itemCode) {
             return String.Format("select distinct(InvoiceNum) from LineItems where ItemCode = '{0}'", itemCode);
+        }
+
+        public string getMaxIdFromItems() {
+            return "select max(ItemCode) from ItemDesc";
         }
 
         /// <summary>
