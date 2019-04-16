@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +14,14 @@ namespace GroupProject.Items
         /// </summary>
         /// <returns>SQL statement</returns>
         public string getAllItems() {
-            return "select ItemCode, ItemDesc, Cost from ItemDesc order by ItemDesc";
+            try
+            {
+                return "select ItemCode, ItemDesc, Cost from ItemDesc order by ItemDesc";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ExceptionChain(MethodInfo.GetCurrentMethod(), ex));
+            }
         }
 
         /// <summary>
@@ -22,11 +30,29 @@ namespace GroupProject.Items
         /// <param name="itemCode">Unique identifier for an item description.</param>
         /// <returns>SQL statement</returns>
         public string getAllInvoicesForItemCode(string itemCode) {
-            return String.Format("select distinct(InvoiceNum) from LineItems where ItemCode = '{0}'", itemCode);
+            try
+            {
+                return String.Format("select distinct(InvoiceNum) from LineItems where ItemCode = '{0}'", itemCode);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ExceptionChain(MethodInfo.GetCurrentMethod(), ex));
+            }
         }
 
+        /// <summary>
+        /// Get the max id from the items table
+        /// </summary>
+        /// <returns></returns>
         public string getMaxIdFromItems() {
-            return "select max(ItemCode) from ItemDesc";
+            try
+            {
+                return "select max(ItemCode) from ItemDesc";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ExceptionChain(MethodInfo.GetCurrentMethod(), ex));
+            }
         }
 
         /// <summary>
@@ -37,7 +63,14 @@ namespace GroupProject.Items
         /// <param name="itemCode">Unique identifier for an item description.</param>
         /// <returns>SQL statement</returns>
         public string updateItemDescription(string desc, decimal cost, string itemCode) {
-            return String.Format("Update ItemDesc Set ItemDesc = '{0}', Cost = {1} where ItemCode = '{2}'", desc, cost, itemCode);
+            try
+            {
+                return String.Format("Update ItemDesc Set ItemDesc = '{0}', Cost = {1} where ItemCode = '{2}'", desc, cost, itemCode);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ExceptionChain(MethodInfo.GetCurrentMethod(), ex));
+            }
         }
 
         /// <summary>
@@ -48,7 +81,14 @@ namespace GroupProject.Items
         /// <param name="cost">Cost of item in decimal</param>
         /// <returns>SQL statement</returns>
         public string addNewItemDescription(string itemCode, string desc, decimal cost) {
-            return String.Format("Insert into ItemDesc (ItemCode, ItemDesc, Cost) Values ('{0}', '{1}', {2})", itemCode, desc, cost);
+            try
+            {
+                return String.Format("Insert into ItemDesc (ItemCode, ItemDesc, Cost) Values ('{0}', '{1}', {2})", itemCode, desc, cost);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ExceptionChain(MethodInfo.GetCurrentMethod(), ex));
+            }
         }
 
         /// <summary>
@@ -57,7 +97,25 @@ namespace GroupProject.Items
         /// <param name="itemCode">Unique identifier for an item description.</param>
         /// <returns>SQL statement</returns>
         public string deleteItemDescription(string itemCode) {
-            return String.Format("Delete from ItemDesc Where ItemCode = '{0}'", itemCode);
+            try
+            {
+                return String.Format("Delete from ItemDesc Where ItemCode = '{0}'", itemCode);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ExceptionChain(MethodInfo.GetCurrentMethod(), ex));
+            }
+        }
+
+        /// <summary>
+        /// Returns error info as a string in a consistent format to make debugging easier
+        /// </summary>
+        /// <param name="mb"></param>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private static string ExceptionChain(MethodBase mb, Exception ex)
+        {
+            return string.Format("{0}.{1}->{2}", mb.DeclaringType.Name, mb.Name, ex.Message);
         }
     }
 }
