@@ -40,7 +40,12 @@ namespace GroupProject.Search
                 InvoiceNum = invoiceNum;
                 InvoiceDate = date;
                 TotalCost = cost;
-            }           
+            }
+
+            public override string ToString()
+            {
+                return InvoiceNum;
+            }
         }
         
 
@@ -79,7 +84,7 @@ namespace GroupProject.Search
         {
             comboBoxCosts.Items.Clear();
             comboBoxCosts.Items.Add("All");
-            foreach (var item in controller.GetAllDates())
+            foreach (var item in controller.GetAllCosts())
             {
                 comboBoxCosts.Items.Add(item);
             }
@@ -88,8 +93,12 @@ namespace GroupProject.Search
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        } 
-        
-        /// call ParentWindow.loadInvoiceNum(#);
+        }
+
+        private void ResultList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var list = sender as ListView;
+            ParentWindow.loadInvoiceNum(int.Parse(list.SelectedItem.ToString()));
+        }
     }
 }

@@ -127,7 +127,7 @@ namespace GroupProject
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception(ExceptionChain(MethodInfo.GetCurrentMethod(), ex));
             }
         }
 
@@ -287,10 +287,10 @@ namespace GroupProject
         /// <summary>
         /// opens the search window.
         /// </summary>
-        public void openSearchWindow() {
+        public void openSearchWindow(MainWindow win) {
             try
             {
-                Search.wndSearch wndSearch = new Search.wndSearch();
+                Search.wndSearch wndSearch = new Search.wndSearch(win);
                 wndSearch.ShowDialog();
             }
             catch (Exception ex)

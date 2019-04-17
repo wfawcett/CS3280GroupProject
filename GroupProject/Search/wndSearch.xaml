@@ -23,7 +23,7 @@
         <ComboBox x:Name="comboBoxDates" Margin="10,79,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="22"/>
         <Label x:Name="labelInvoice" Content="Invoice" Margin="10,0,1,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="26"/>
         <ComboBox x:Name="comboBoxInvoices" Margin="10,26,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="22"/>
-        <ListView x:Name="resultList" Grid.Column="1" Margin="10,0" Grid.RowSpan="2" Height="400" VerticalAlignment="Bottom" MouseDoubleClick="ResultList_SelectionChanged">
+        <ListView x:Name="resultList" Grid.Column="1" Margin="10,0" Grid.RowSpan="2" Height="400" VerticalAlignment="Bottom" MouseDoubleClick="ResultList_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn HeaderStringFormat="Invoice #" Header="Invoice #" DisplayMemberBinding="{Binding InvoiceNum}"/>

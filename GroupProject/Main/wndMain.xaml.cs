@@ -59,7 +59,27 @@ namespace GroupProject {
         }
 
         public void loadInvoiceNum(int invoiceNum) {
-            /// load the form with the invoice selected. 
+            /// load the form with the invoice selected.
+            try
+            {
+                if (invoiceNum > -1)
+                {
+                    for (int i = 0; i < invoiceList.Items.Count; i++)
+                    {
+                        var invoiceItem = (clsMainLogic.Invoice)invoiceList.Items[i];
+
+                        if (invoiceItem.InvoiceNum == invoiceNum)
+                        {
+                            invoiceList.SelectedIndex = i;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         private void updateAllInvoices() {
@@ -137,7 +157,7 @@ namespace GroupProject {
         /// <param name="e"></param>
         private void SearchMenuItem_Click(object sender, RoutedEventArgs e) {
             try{
-                controller.openSearchWindow();
+                controller.openSearchWindow(this);
             }
             catch (Exception ex){
                 HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
