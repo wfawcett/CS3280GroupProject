@@ -5,23 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroupProject.Search"
         mc:Ignorable="d"
-        Title="Search" Height="289.353" Width="276.722">
+        Title="Search" Height="451.353" Width="720.722">
     <Grid Margin="10,0,2,10" RenderTransformOrigin="0.544,0.492">
         <Grid.RowDefinitions>
             <RowDefinition Height="0*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="181"/>
+            <ColumnDefinition Width="Auto" MinWidth="186"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="buttonSelect" Content="Select" Margin="10,172,-65,0" Grid.Row="1" Click="ButtonSearch_Click" Height="30" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBoxCosts" Margin="10,130,-65,0" VerticalAlignment="Top" Height="22" Grid.Row="1"/>
-        <Label x:Name="labelCost" Content="Cost" Grid.Row="1" VerticalAlignment="Top" Height="24" Margin="10,106,-62,0"/>
-        <Label x:Name="labelDate" Content="Date" Margin="10,53,-62,0" Grid.Row="1" VerticalAlignment="Top" Height="26"/>
-        <Button x:Name="buttonCancel" Content="Cancel" Margin="10,208,-65,0" Grid.RowSpan="2" Height="30" VerticalAlignment="Top" Click="ButtonCancel_Click"/>
-        <ComboBox x:Name="comboBoxDates" Margin="10,79,-65,0" Grid.RowSpan="2" VerticalAlignment="Top"/>
-        <Label x:Name="labelInvoice" Content="Invoice" Margin="10,0,-61,0" Grid.RowSpan="2" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBoxInvoices" Margin="10,26,-65,0" Grid.RowSpan="2" VerticalAlignment="Top"/>
-
+        <Button x:Name="buttonSelect" Content="Select" Margin="10,172,0,0" Grid.Row="1" Click="ButtonSearch_Click" Height="30" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBoxCosts" Margin="10,130,0,0" VerticalAlignment="Top" Height="22" Grid.Row="1"/>
+        <Label x:Name="labelCost" Content="Cost" Grid.Row="1" VerticalAlignment="Top" Height="24" Margin="10,106,0,0"/>
+        <Label x:Name="labelDate" Content="Date" Margin="10,53,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26"/>
+        <Button x:Name="buttonCancel" Content="Cancel" Margin="10,208,0,0" Grid.RowSpan="2" Height="30" VerticalAlignment="Top" Click="ButtonCancel_Click"/>
+        <ComboBox x:Name="comboBoxDates" Margin="10,79,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="22"/>
+        <Label x:Name="labelInvoice" Content="Invoice" Margin="10,0,1,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="26"/>
+        <ComboBox x:Name="comboBoxInvoices" Margin="10,26,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="22"/>
+        <ListView x:Name="resultList" Grid.Column="1" Margin="10,0" Grid.RowSpan="2" Height="400" VerticalAlignment="Bottom">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn HeaderStringFormat="Invoice #" Header="Invoice #"/>
+                    <GridViewColumn HeaderStringFormat="Invoice Date" Header="Invoice Date"/>
+                    <GridViewColumn HeaderStringFormat="Total Cost" Header="Total Cost"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

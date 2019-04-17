@@ -31,13 +31,18 @@ namespace GroupProject.Search
 
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
-
+            resultList.Items.Clear();
+            int i = 0;
+            foreach (var item in controller.SearchInvoices(comboBoxInvoices.Text, comboBoxDates.Text, comboBoxCosts.Text))
+            {
+                resultList..Add( new ListViewItem( new[]{ item[0].ToString(), item[1].ToString(), item[2].ToString() } ) );
+            }     
         }
 
         private void LoadInvoiceList()
         {
             comboBoxInvoices.Items.Clear();
-            foreach (var item in controller.GetAllInvoices())
+            foreach (var item in controller.GetAllInvoiceNumbers())
             {
                 comboBoxInvoices.Items.Add(item);
             }

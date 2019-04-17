@@ -29,7 +29,7 @@ namespace GroupProject.Search
         /// Get All Items from database
         /// </summary>
         /// <returns>List of Items</returns>
-        public List<string> GetAllInvoices()
+        public List<string> GetAllInvoiceNumbers()
         {
             List<string> items = new List<string>();
             string query = sql.getAllInvoices();
@@ -76,6 +76,25 @@ namespace GroupProject.Search
             for (int i = 0; i < iRef; i++)
             {
                 items.Add(ds.Tables[0].Rows[i].ItemArray[0].ToString());
+            }
+            return items;
+        }
+
+
+        /// <summary>
+        /// Get All Costs from database
+        /// </summary>
+        /// <returns>List of Costs</returns>
+        public List<List<string>> SearchInvoices(string invoiceNum, string invoiceDate, string totalCost)
+        {
+            List<List<string>> items = new List<List<string>>();
+            string query = sql.GetSearchInvoice(invoiceNum, invoiceDate, totalCost);
+            int iRef = 0;
+            DataSet ds = db.ExecuteSQLStatement(query, ref iRef);
+
+            for (int i = 0; i < iRef; i++)
+            {
+                items.Add(new List<string>{ ds.Tables[0].Rows[i].ItemArray[0].ToString(), ds.Tables[0].Rows[i].ItemArray[1].ToString(), ds.Tables[0].Rows[i].ItemArray[2].ToString() } );
             }
             return items;
         }

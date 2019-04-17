@@ -31,5 +31,42 @@ namespace GroupProject.Search
         {
             return "SELECT DISTINCT TotalCost FROM Invoices";
         }
+
+        public string GetSearchInvoice(string invoiceNum="", string invoiceDate="", string totalCost="")
+        {
+            string sql = "SELECT * FROM Invoices";
+
+            if (invoiceNum != String.Empty || invoiceDate != String.Empty || totalCost != String.Empty)
+            {
+                sql += " WHERE";
+            }
+
+            if (invoiceNum != String.Empty )
+            {
+                sql += String.Format(" InvoiceNum = {0}", invoiceNum);
+            }
+
+            if (invoiceNum != String.Empty && invoiceDate != String.Empty)
+            {
+                sql += " AND";
+            }
+
+            if (invoiceDate != String.Empty)
+            {
+                sql += String.Format(" InvoiceDate = #{0}#", invoiceDate);
+            }
+
+            if (invoiceDate != String.Empty && totalCost != String.Empty)
+            {
+                sql += " AND";
+            }
+
+            if (totalCost != String.Empty)
+            {
+                sql += String.Format(" TotalCost = {0}", totalCost);
+            }
+
+            return sql;
+        }
     }
 }
