@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +33,9 @@ namespace GroupProject.Search
             ParentWindow = window;
         }
 
+        /// <summary>
+        /// Struct to allow passing an observable list
+        /// </summary>
         public struct searchResult {
             public string InvoiceNum { get; set; }
             public string InvoiceDate { get; set; }
@@ -48,57 +52,148 @@ namespace GroupProject.Search
             }
         }
         
-
+        /// <summary>
+        /// Event handler for Search Button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
-        {            
-            ObservableCollection<searchResult> sr = new ObservableCollection<searchResult>();
-            foreach (var item in controller.SearchInvoices(comboBoxInvoices.Text, comboBoxDates.Text, comboBoxCosts.Text))
+        {
+            try
             {
-                sr.Add(new searchResult(item[0], item[1], item[2]));
-            }
+                ObservableCollection<searchResult> sr = new ObservableCollection<searchResult>();
+                foreach (var item in controller.SearchInvoices(comboBoxInvoices.Text, comboBoxDates.Text, comboBoxCosts.Text))
+                {
+                    sr.Add(new searchResult(item[0], item[1], item[2]));
+                }
 
-            resultList.ItemsSource = sr;
+                resultList.ItemsSource = sr;
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
+        /// <summary>
+        /// Reloads the invoice numbers into the drop down.
+        /// </summary>
         private void LoadInvoiceList()
         {
-            comboBoxInvoices.Items.Clear();
-            comboBoxInvoices.Items.Add("All");
-            foreach (var item in controller.GetAllInvoiceNumbers())
+            try
             {
-                comboBoxInvoices.Items.Add(item);
+                comboBoxInvoices.Items.Clear();
+                comboBoxInvoices.Items.Add("All");
+                foreach (var item in controller.GetAllInvoiceNumbers())
+                {
+                    comboBoxInvoices.Items.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
         }
 
+        /// <summary>
+        /// Reloads the invoice dates into the drop down.
+        /// </summary>
         private void LoadDateList()
         {
-            comboBoxDates.Items.Clear();
-            comboBoxDates.Items.Add("All");
-            foreach (var item in controller.GetAllDates())
+            try
             {
-                comboBoxDates.Items.Add(item);
+                comboBoxDates.Items.Clear();
+                comboBoxDates.Items.Add("All");
+                foreach (var item in controller.GetAllDates())
+                {
+                    comboBoxDates.Items.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
         }
 
+        /// <summary>
+        /// Reloads the totals into the drop down.
+        /// </summary>
         private void LoadCostList()
         {
-            comboBoxCosts.Items.Clear();
-            comboBoxCosts.Items.Add("All");
-            foreach (var item in controller.GetAllCosts())
+            try
             {
-                comboBoxCosts.Items.Add(item);
+                comboBoxCosts.Items.Clear();
+                comboBoxCosts.Items.Add("All");
+                foreach (var item in controller.GetAllCosts())
+                {
+                    comboBoxCosts.Items.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
         }
 
+        /// <summary>
+        /// Event handler for cancel button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            try
+            {
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
+        /// <summary>
+        /// event handler for double clicking on an invoice number. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ResultList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var list = sender as ListView;
-            ParentWindow.loadInvoiceNum(int.Parse(list.SelectedItem.ToString()));
+            try
+            {                
+                var list = sender as ListView;
+                if (list.SelectedIndex > -1) {
+                    ParentWindow.loadInvoiceNum(int.Parse(list.SelectedItem.ToString()));
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Error Handler
+        /// </summary>
+        /// <param name="sClass"></param>
+        /// <param name="sMethod"></param>
+        /// <param name="sMessage"></param>
+        private void HandleError(string sClass, string sMethod, string sMessage)
+        {
+            try
+            {
+                MessageBox.Show(sClass + "." + sMethod + " -> " + sMessage);
+            }
+            catch (System.Exception ex)
+            {
+                System.IO.File.AppendAllText(@"C:\Error.txt", Environment.NewLine + "HandleError Exception: " + ex.Message);
+            }
         }
     }
 }
