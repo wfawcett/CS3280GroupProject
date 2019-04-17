@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -55,19 +56,31 @@ namespace GroupProject {
         }
 
         public void refresh() {
-            if (invoiceList.SelectedIndex > -1) {
-                int selectedIndex = invoiceList.SelectedIndex;
-                updateAllInvoices();
-                invoiceList.SelectedIndex = selectedIndex;
+            try{
+                if (invoiceList.SelectedIndex > -1) {
+                    int selectedIndex = invoiceList.SelectedIndex;
+                    updateAllInvoices();
+                    invoiceList.SelectedIndex = selectedIndex;
+                }                
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
         }
 
         private void updateAllInvoices() {
-            allInvoices.Clear();
-            foreach (var invoice in controller.getAllInvoices()) {
-                allInvoices.Add(invoice);
+            try{
+                allInvoices.Clear();
+                foreach (var invoice in controller.getAllInvoices()) {
+                    allInvoices.Add(invoice);
+                }
+                invoiceList.ItemsSource = allInvoices;
             }
-            invoiceList.ItemsSource = allInvoices;
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         /// <summary>
@@ -76,10 +89,16 @@ namespace GroupProject {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void InvoiceList_SelectionChanged_1(object sender, SelectionChangedEventArgs e) {
-            if (invoiceList.SelectedIndex > -1) {
-                clsMainLogic.Invoice clickedInvoice = (clsMainLogic.Invoice)e.AddedItems[0];
-                setCurrentInvoice(clickedInvoice);
-            }            
+            try{
+                if (invoiceList.SelectedIndex > -1) {
+                    clsMainLogic.Invoice clickedInvoice = (clsMainLogic.Invoice)e.AddedItems[0];
+                    setCurrentInvoice(clickedInvoice);
+                }            
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         /// <summary>
@@ -87,23 +106,35 @@ namespace GroupProject {
         /// </summary>
         /// <param name="invoice"></param>
         private void setCurrentInvoice(clsMainLogic.Invoice invoice) {
-            currentInvoice = invoice;                                                
-            currentInvoice.LoadItems(controller.getInvoiceDetails(invoice.InvoiceNum));
-            updateInvoiceDisplay();
+            try{
+                currentInvoice = invoice;                                                
+                currentInvoice.LoadItems(controller.getInvoiceDetails(invoice.InvoiceNum));
+                updateInvoiceDisplay();
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         private void updateInvoiceDisplay() {
-            btnAddItem.IsEnabled = true;
-            btnRemoveItem.IsEnabled = true;
-            btnSave.IsEnabled = true;
-            tbInvoiceNum.Text = (currentInvoice.InvoiceNum < 0) ? "TBD" : currentInvoice.InvoiceNum.ToString();
-            pickInvoiceDate.SelectedDate = currentInvoice.InvoiceDate;
-            tbTotalCost.Text = currentInvoice.TotalCost.ToString();
-            ObservableCollection<clsMainLogic.Item> observeItems = new ObservableCollection<clsMainLogic.Item>();
-            foreach (var item in currentInvoice.Items) {
-                observeItems.Add(item);
+            try{
+                btnAddItem.IsEnabled = true;
+                btnRemoveItem.IsEnabled = true;
+                btnSave.IsEnabled = true;
+                tbInvoiceNum.Text = (currentInvoice.InvoiceNum < 0) ? "TBD" : currentInvoice.InvoiceNum.ToString();
+                pickInvoiceDate.SelectedDate = currentInvoice.InvoiceDate;
+                tbTotalCost.Text = currentInvoice.TotalCost.ToString();
+                ObservableCollection<clsMainLogic.Item> observeItems = new ObservableCollection<clsMainLogic.Item>();
+                foreach (var item in currentInvoice.Items) {
+                    observeItems.Add(item);
+                }
+                lbInvoiceItems.ItemsSource = observeItems;
             }
-            lbInvoiceItems.ItemsSource = observeItems;
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         /// <summary>
@@ -112,7 +143,13 @@ namespace GroupProject {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SearchMenuItem_Click(object sender, RoutedEventArgs e) {
-            controller.openSearchWindow();
+            try{
+                controller.openSearchWindow();
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         /// <summary>
@@ -121,7 +158,13 @@ namespace GroupProject {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EditMenuItem_Click(object sender, RoutedEventArgs e) {
-            controller.openEditWindow(this);
+            try{
+                controller.openEditWindow(this);
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         /// <summary>
@@ -130,7 +173,13 @@ namespace GroupProject {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MenuItem_Click(object sender, RoutedEventArgs e) {
-            this.Close();
+            try{
+                this.Close();
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         /// <summary>
@@ -139,47 +188,101 @@ namespace GroupProject {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void BtnSave_Click(object sender, RoutedEventArgs e) {
-            currentInvoice.InvoiceDate = (DateTime)pickInvoiceDate.SelectedDate;
-            currentInvoice = controller.saveInvoice(currentInvoice);
-            updateAllInvoices();
-            setCurrentInvoice(currentInvoice);            
+            try{
+                currentInvoice.InvoiceDate = (DateTime)pickInvoiceDate.SelectedDate;
+                currentInvoice = controller.saveInvoice(currentInvoice);
+                updateAllInvoices();
+                setCurrentInvoice(currentInvoice);            
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         private void BtnAddItem_Click(object sender, RoutedEventArgs e) {
-            if (lbStock.SelectedIndex > -1) {
-                clsMainLogic.Item selectedItem = (clsMainLogic.Item)lbStock.SelectedItem;
-                currentInvoice.AddItem(selectedItem);                
-                updateInvoiceDisplay();
-            }            
+            try{
+                if (lbStock.SelectedIndex > -1) {
+                    clsMainLogic.Item selectedItem = (clsMainLogic.Item)lbStock.SelectedItem;
+                    currentInvoice.AddItem(selectedItem);                
+                    updateInvoiceDisplay();
+                }            
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         private void BtnRemoveItem_Click(object sender, RoutedEventArgs e) {
-            if (lbInvoiceItems.SelectedIndex > -1) {
-                currentInvoice.RemoveItem((clsMainLogic.Item)lbInvoiceItems.SelectedItem);
-                updateInvoiceDisplay();
+            try{
+                if (lbInvoiceItems.SelectedIndex > -1) {
+                    currentInvoice.RemoveItem((clsMainLogic.Item)lbInvoiceItems.SelectedItem);
+                    updateInvoiceDisplay();
+                }
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
             
         }
 
         private void BtnNewInvoice_Click(object sender, RoutedEventArgs e) {
-            clsMainLogic.Invoice newInvoice = controller.createNewInvoice();
-            setCurrentInvoice(newInvoice);
+            try{
+                clsMainLogic.Invoice newInvoice = controller.createNewInvoice();
+                setCurrentInvoice(newInvoice);
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         private void BtnDeleteInvoice_Click(object sender, RoutedEventArgs e) {
-            controller.deleteInvoice(currentInvoice);
-            updateAllInvoices();
-            clearDisplay();
+            try{
+                controller.deleteInvoice(currentInvoice);
+                updateAllInvoices();
+                clearDisplay();
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
         }
 
         private void clearDisplay() {
-            lbInvoiceItems.ItemsSource = null;
-            tbInvoiceNum.Text = "";
-            pickInvoiceDate.SelectedDate = null;
-            tbTotalCost.Text = "";
-            btnSave.IsEnabled = false;
-            btnRemoveItem.IsEnabled = false;
-            btnAddItem.IsEnabled = false;
+            try{
+                lbInvoiceItems.ItemsSource = null;
+                tbInvoiceNum.Text = "";
+                pickInvoiceDate.SelectedDate = null;
+                tbTotalCost.Text = "";
+                btnSave.IsEnabled = false;
+                btnRemoveItem.IsEnabled = false;
+                btnAddItem.IsEnabled = false;
+            }
+            catch (Exception ex){
+                HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
+                    MethodInfo.GetCurrentMethod().Name, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Error Handler
+        /// </summary>
+        /// <param name="sClass"></param>
+        /// <param name="sMethod"></param>
+        /// <param name="sMessage"></param>
+        private void HandleError(string sClass, string sMethod, string sMessage)
+        {
+            try
+            {
+                MessageBox.Show(sClass + "." + sMethod + " -> " + sMessage);
+            }
+            catch (System.Exception ex)
+            {
+                System.IO.File.AppendAllText(@"C:\Error.txt", Environment.NewLine + "HandleError Exception: " + ex.Message);
+            }
         }
     }
 }

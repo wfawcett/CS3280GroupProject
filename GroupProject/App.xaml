@@ -4,6 +4,45 @@
              xmlns:local="clr-namespace:GroupProject"
              StartupUri="Main/wndMain.xaml">
     <Application.Resources>
-         
+        <Style TargetType = "TextBlock">
+            <Setter Property = "FontSize" Value = "11" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property = "FontSize" Value = "11" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="3"
+                              Direction="330"
+                              Color="#DDDDDD"
+                              RenderingBias="Quality"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType = "TextBox">
+            <Setter Property = "HorizontalAlignment" Value = "Left" />
+            <Setter Property = "FontSize" Value = "11" />
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+
+        <Style TargetType="ListBox">
+            <Setter Property = "FontSize" Value = "11" />
+            <Setter Property = "FontWeight" Value = "Bold" />
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="WhiteSmoke"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="3"
+                              Direction="330"
+                              Color="#DDDDDD"
+                              RenderingBias="Quality"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>
