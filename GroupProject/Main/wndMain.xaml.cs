@@ -42,18 +42,7 @@ namespace GroupProject {
             updateAllInvoices();            
             lbStock.ItemsSource = controller.getAllItemsInStock();
         }
-
-        /// <summary>
-        /// alternate constructor, initializes window and loads and selects invoice passed to it.
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        public MainWindow(int invoiceNumber) {
-            InitializeComponent();
-            controller = new clsMainLogic();
-            updateAllInvoices();
-            lbStock.ItemsSource = controller.getAllItemsInStock();
-            currentInvoice = controller.getInvoceNum(invoiceNumber);            
-        }
+       
 
         public void refresh() {
             try{
@@ -67,6 +56,10 @@ namespace GroupProject {
                 HandleError(MethodInfo.GetCurrentMethod().DeclaringType.Name,
                     MethodInfo.GetCurrentMethod().Name, ex.Message);
             }
+        }
+
+        public void loadInvoiceNum(int invoiceNum) {
+            /// load the form with the invoice selected. 
         }
 
         private void updateAllInvoices() {

@@ -34,6 +34,10 @@ namespace GroupProject.Search
 
         public string GetSearchInvoice(string invoiceNum="", string invoiceDate="", string totalCost="")
         {
+            invoiceNum = (invoiceNum == "All") ? "" : invoiceNum;
+            invoiceDate = (invoiceDate == "All") ? "" : invoiceDate;
+            totalCost = (totalCost == "All") ? "" : totalCost;
+
             string sql = "SELECT * FROM Invoices";
 
             if (invoiceNum != String.Empty || invoiceDate != String.Empty || totalCost != String.Empty)

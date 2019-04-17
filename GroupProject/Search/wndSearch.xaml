@@ -23,12 +23,12 @@
         <ComboBox x:Name="comboBoxDates" Margin="10,79,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="22"/>
         <Label x:Name="labelInvoice" Content="Invoice" Margin="10,0,1,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="26"/>
         <ComboBox x:Name="comboBoxInvoices" Margin="10,26,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Height="22"/>
-        <ListView x:Name="resultList" Grid.Column="1" Margin="10,0" Grid.RowSpan="2" Height="400" VerticalAlignment="Bottom">
+        <ListView x:Name="resultList" Grid.Column="1" Margin="10,0" Grid.RowSpan="2" Height="400" VerticalAlignment="Bottom" MouseDoubleClick="ResultList_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn HeaderStringFormat="Invoice #" Header="Invoice #"/>
-                    <GridViewColumn HeaderStringFormat="Invoice Date" Header="Invoice Date"/>
-                    <GridViewColumn HeaderStringFormat="Total Cost" Header="Total Cost"/>
+                    <GridViewColumn HeaderStringFormat="Invoice #" Header="Invoice #" DisplayMemberBinding="{Binding InvoiceNum}"/>
+                    <GridViewColumn HeaderStringFormat="Invoice Date" Header="Invoice Date" DisplayMemberBinding="{Binding InvoiceDate}"/>
+                    <GridViewColumn HeaderStringFormat="Total Cost" Header="Total Cost" DisplayMemberBinding="{Binding TotalCost}"/>
                 </GridView>
             </ListView.View>
         </ListView>

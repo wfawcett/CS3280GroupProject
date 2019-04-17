@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,28 +21,44 @@ namespace GroupProject.Search
     public partial class wndSearch : Window
     {
         private clsSearchLogic controller;
-        public wndSearch()
+        private MainWindow ParentWindow;
+        public wndSearch(MainWindow window)
         {
             InitializeComponent();
             controller = new clsSearchLogic();
             LoadInvoiceList();
             LoadDateList();
             LoadCostList();
+            ParentWindow = window;
         }
 
+        public struct searchResult {
+            public string InvoiceNum { get; set; }
+            public string InvoiceDate { get; set; }
+            public string TotalCost { get; set; }
+            public searchResult(string invoiceNum, string date, string cost) {
+                InvoiceNum = invoiceNum;
+                InvoiceDate = date;
+                TotalCost = cost;
+            }           
+        }
+        
+
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
-        {
-            resultList.Items.Clear();
-            int i = 0;
+        {            
+            ObservableCollection<searchResult> sr = new ObservableCollection<searchResult>();
             foreach (var item in controller.SearchInvoices(comboBoxInvoices.Text, comboBoxDates.Text, comboBoxCosts.Text))
             {
-                resultList..Add( new ListViewItem( new[]{ item[0].ToString(), item[1].ToString(), item[2].ToString() } ) );
-            }     
+                sr.Add(new searchResult(item[0], item[1], item[2]));
+            }
+
+            resultList.ItemsSource = sr;
         }
 
         private void LoadInvoiceList()
         {
             comboBoxInvoices.Items.Clear();
+            comboBoxInvoices.Items.Add("All");
             foreach (var item in controller.GetAllInvoiceNumbers())
             {
                 comboBoxInvoices.Items.Add(item);
@@ -51,6 +68,7 @@ namespace GroupProject.Search
         private void LoadDateList()
         {
             comboBoxDates.Items.Clear();
+            comboBoxDates.Items.Add("All");
             foreach (var item in controller.GetAllDates())
             {
                 comboBoxDates.Items.Add(item);
@@ -60,6 +78,7 @@ namespace GroupProject.Search
         private void LoadCostList()
         {
             comboBoxCosts.Items.Clear();
+            comboBoxCosts.Items.Add("All");
             foreach (var item in controller.GetAllDates())
             {
                 comboBoxCosts.Items.Add(item);
@@ -69,6 +88,8 @@ namespace GroupProject.Search
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
+        } 
+        
+        /// call ParentWindow.loadInvoiceNum(#);
     }
 }
